@@ -1,0 +1,16 @@
+{
+    "configurations": [
+        {
+            "type": "node",
+            "request": "attach",
+            "name": "User Backend",
+            "port": 5630,
+            "remoteRoot": "/home/node/app",
+            "localRoot": "${workspaceFolder}/",
+            "restart": true,
+            "sourceMapPathOverrides": {
+              "/home/node/app/*": "${workspaceFolder}/*"
+            },
+          }
+    ]
+}

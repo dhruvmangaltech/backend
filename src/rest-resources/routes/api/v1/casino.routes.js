@@ -1,0 +1,238 @@
+import express from 'express'
+import CasinoController from '../../../controllers/casino.controller'
+import { checkPermission, isAdminAuthenticated } from '../../../middlewares'
+import contextMiddleware from '../../../middlewares/context.middleware'
+import requestValidationMiddleware from '../../../middlewares/requestValidation.middleware'
+import responseValidationMiddleware from '../../../middlewares/responseValidation.middleware'
+import RedisClient from '../../../../libs/redisClient'
+import cacheController from '../../../middlewares/cacheController.middleware.js'
+
+import {
+  casinoProviderGetAllSchemas,
+  casinoProviderCreateSchemas,
+  casinoProviderUpdateSchemas,
+  casinoCategoryCreateSchemas,
+  casinoCategoryUpdateSchemas,
+  casinoCategoryGetAllSchemas,
+  casinoCategoryOrderUpdateSchemas,
+  casinoCategoryDeleteSchemas,
+  getSubCategorySchemas,
+  createSubCategorySchemas,
+  updateSubCategorySchemas,
+  deleteSubCategorySchemas,
+  orderSubCategorySchemas,
+  casinoGameCreateSchemas,
+  casinoGameUpdateSchemas,
+  casinoGameOrderUpdateSchemas,
+  casinoGameDeleteSchemas,
+  getCasinoTransactionsSchemas,
+  casinoProviderDeleteSchemas
+} from '../../../../rest-resources/middlewares/validation/casino-validation.schemas'
+import multer from 'multer'
+const upload = multer()
+const args = { mergeParams: true }
+const casinoRouter = express.Router(args)
+
+casinoRouter
+  .route('/providers')
+  .get(
+    requestValidationMiddleware(casinoProviderGetAllSchemas),
+    contextMiddleware(false),
+    isAdminAuthenticated,
+    checkPermission,
+    CasinoController.getAllProviders,
+    responseValidationMiddleware(casinoProviderGetAllSchemas)
+  )
+  .post(
+    upload.single('thumbnail'),
+    requestValidationMiddleware(casinoProviderCreateSchemas),
+    contextMiddleware(true),
+    isAdminAuthenticated,
+    cacheController,
+    checkPermission,
+    CasinoController.createCasinoProvider,
+    responseValidationMiddleware(casinoProviderCreateSchemas)
+  )
+  .put(
+    upload.single('thumbnail'),
+    requestValidationMiddleware(casinoProviderUpdateSchemas),
+    contextMiddleware(true),
+    cacheController,
+    isAdminAuthenticated,
+    checkPermission,
+    CasinoController.updateCasinoProvider,
+    responseValidationMiddleware(casinoProviderUpdateSchemas)
+  )
+  .delete(
+    requestValidationMiddleware(casinoProviderDeleteSchemas),
+    contextMiddleware(true),
+    isAdminAuthenticated,
+    checkPermission,
+    CasinoController.deleteCasinoProvider,
+    responseValidationMiddleware(casinoProviderDeleteSchemas)
+  )
+
+casinoRouter
+  .route('/category')
+  .get(
+    requestValidationMiddleware(casinoCategoryGetAllSchemas),
+    contextMiddleware(false),
+    isAdminAuthenticated,
+    checkPermission,
+    CasinoController.getGameCategory,
+    responseValidationMiddleware({})
+  )
+  .post(
+    requestValidationMiddleware(casinoCategoryCreateSchemas),
+    contextMiddleware(true),
+    isAdminAuthenticated,
+    checkPermission,
+    CasinoController.createCasinoCategory,
+    responseValidationMiddleware(casinoCategoryCreateSchemas)
+  )
+  .put(
+    requestValidationMiddleware(casinoCategoryUpdateSchemas),
+    contextMiddleware(true),
+    isAdminAuthenticated,
+    checkPermission,
+    CasinoController.updateCasinoCategory,
+    responseValidationMiddleware(casinoCategoryUpdateSchemas)
+  )
+  .delete(
+    requestValidationMiddleware(casinoCategoryDeleteSchemas),
+    contextMiddleware(true),
+    isAdminAuthenticated,
+    checkPermission,
+    CasinoController.deleteCasinoCategory,
+    responseValidationMiddleware(casinoCategoryDeleteSchemas)
+  )
+casinoRouter
+  .route('/category/order')
+  .put(
+    requestValidationMiddleware(casinoCategoryOrderUpdateSchemas),
+    contextMiddleware(true),
+    isAdminAuthenticated,
+    checkPermission,
+    CasinoController.updateOrderCasinoCategory,
+    responseValidationMiddleware(casinoCategoryOrderUpdateSchemas)
+  )
+casinoRouter
+  .route('/subcategory')
+  .get(
+    requestValidationMiddleware(getSubCategorySchemas),
+    contextMiddleware(false),
+    isAdminAuthenticated,
+    checkPermission,
+    CasinoController.getSubCategory,
+    responseValidationMiddleware(getSubCategorySchemas)
+  )
+  .post(
+    upload.single('thumbnail'),
+    requestValidationMiddleware(createSubCategorySchemas),
+    contextMiddleware(false),
+    cacheController,
+    isAdminAuthenticated,
+    checkPermission,
+    CasinoController.createSubCategory,
+    responseValidationMiddleware(createSubCategorySchemas)
+  )
+  .put(
+    upload.single('thumbnail'),
+    requestValidationMiddleware(updateSubCategorySchemas),
+    contextMiddleware(false),
+    cacheController,
+    isAdminAuthenticated,
+    checkPermission,
+    CasinoController.updateSubCategory,
+    responseValidationMiddleware(updateSubCategorySchemas)
+  )
+  .delete(
+    requestValidationMiddleware(deleteSubCategorySchemas),
+    contextMiddleware(false),
+    isAdminAuthenticated,
+    checkPermission,
+    CasinoController.deleteSubCategory,
+    responseValidationMiddleware(deleteSubCategorySchemas)
+  )
+casinoRouter
+  .route('/subcategory/order')
+  .put(
+    requestValidationMiddleware(orderSubCategorySchemas),
+    contextMiddleware(false),
+    isAdminAuthenticated,
+    checkPermission,
+    CasinoController.orderSubCategory,
+    responseValidationMiddleware(orderSubCategorySchemas)
+  )
+
+casinoRouter
+  .route('/game')
+  .get(
+    requestValidationMiddleware({}),
+    contextMiddleware(false),
+    isAdminAuthenticated,
+    checkPermission,
+    CasinoController.getCasinoGame,
+    responseValidationMiddleware({})
+  )
+  .post(
+    requestValidationMiddleware(casinoGameCreateSchemas),
+    contextMiddleware(true),
+    isAdminAuthenticated,
+    checkPermission,
+    cacheController,
+    CasinoController.createCasinoGame,
+    responseValidationMiddleware(casinoGameCreateSchemas)
+  )
+  .put(
+    upload.single('thumbnailLong'),
+    requestValidationMiddleware(casinoGameUpdateSchemas),
+    contextMiddleware(true),
+    cacheController,
+    isAdminAuthenticated,
+    checkPermission,
+    CasinoController.updateCasinoGame,
+    responseValidationMiddleware(casinoGameUpdateSchemas)
+  )
+  .delete(
+    requestValidationMiddleware(casinoGameDeleteSchemas),
+    contextMiddleware(true),
+    cacheController,
+    isAdminAuthenticated,
+    checkPermission,
+    CasinoController.deleteCasinoGame,
+    responseValidationMiddleware({})
+  )
+
+casinoRouter
+  .route('/games/order')
+  .put(
+    requestValidationMiddleware(casinoGameOrderUpdateSchemas),
+    contextMiddleware(true),
+    isAdminAuthenticated,
+    checkPermission,
+    CasinoController.updateOrderGame,
+    responseValidationMiddleware(casinoGameOrderUpdateSchemas)
+  )
+casinoRouter
+  .route('/games')
+  .get(
+    requestValidationMiddleware({}),
+    contextMiddleware(false),
+    isAdminAuthenticated,
+    checkPermission,
+    CasinoController.getAllCasinoGame,
+    responseValidationMiddleware({})
+  )
+casinoRouter
+  .route('/transactions')
+  .get(
+    requestValidationMiddleware(getCasinoTransactionsSchemas),
+    contextMiddleware(false),
+    isAdminAuthenticated,
+    checkPermission,
+    CasinoController.getCasinoTransactions,
+    responseValidationMiddleware(getCasinoTransactionsSchemas)
+  )
+
+export default casinoRouter
