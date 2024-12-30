@@ -6,6 +6,7 @@ import { InvalidFileErrorType } from '../../utils/constants/errors'
 import CreateProductService from '../../services/products/createProduct'
 import { GetProductList } from '../../services/products/getProductList'
 import UpdateProduct from '../../services/products/updateProduct'
+import GetSingleProduct from '../../services/products/getSingleProduct'
 
 export default class ProductController {
   static async getList (req, res, next) {
@@ -48,6 +49,15 @@ export default class ProductController {
   static async updatePackageStatus (req, res, next) {
     try {
       const { result, successful, errors } = await UpdatePackageStatusService.execute({ ...req.body, ...req.query }, req.context)
+      sendResponse({ req, res, next }, { result, successful, serviceErrors: errors })
+    } catch (error) {
+      next(error)
+    }
+  }
+
+  static async getSingleProduct (req, res, next) {
+    try {
+      const { result, successful, errors } = await GetSingleProduct.execute({ ...req.body, ...req.query }, req.context)
       sendResponse({ req, res, next }, { result, successful, serviceErrors: errors })
     } catch (error) {
       next(error)

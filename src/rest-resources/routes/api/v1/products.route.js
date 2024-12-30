@@ -49,4 +49,13 @@ productRoutes.route('/status')
     responseValidationMiddleware({})
   )
 
+productRoutes.route('/getSingleProduct')
+  .get(
+    requestValidationMiddleware({}),
+    contextMiddleware(false),
+    isAdminAuthenticated,
+    ProductController.getSingleProduct,
+    responseValidationMiddleware({})
+  )
+
 export default productRoutes

@@ -29,4 +29,14 @@ stockRoutes.route('/')
     responseValidationMiddleware({})
   )
 
+stockRoutes.route('/logs')
+  .get(
+    requestValidationMiddleware({}),
+    contextMiddleware(false),
+    isAdminAuthenticated,
+    checkPermission,
+    StockController.stockLogs,
+    responseValidationMiddleware({})
+  )
+
 export default stockRoutes

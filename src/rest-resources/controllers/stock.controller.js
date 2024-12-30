@@ -8,6 +8,7 @@ import { GetProductList } from '../../services/products/getProductList'
 import UpdateProduct from '../../services/products/updateProduct'
 import GetStockList from '../../services/stocks/getStockList'
 import UpdateStocks from '../../services/stocks/updateStocks'
+import StockLogs from '../../services/stockLogs/stockLogs'
 
 export default class StockController {
     static async getList (req, res, next) {
@@ -50,6 +51,15 @@ export default class StockController {
     static async updatePackageStatus (req, res, next) {
       try {
         const { result, successful, errors } = await UpdatePackageStatusService.execute({ ...req.body, ...req.query }, req.context)
+        sendResponse({ req, res, next }, { result, successful, serviceErrors: errors })
+      } catch (error) {
+        next(error)
+      }
+    }
+
+    static async stockLogs (req, res, next) {
+      try {
+        const { result, successful, errors } = await StockLogs.execute({ ...req.body, ...req.query }, req.context)
         sendResponse({ req, res, next }, { result, successful, serviceErrors: errors })
       } catch (error) {
         next(error)
