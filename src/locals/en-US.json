@@ -114,5 +114,6 @@
 	"CredentialsError": "CredentialsError",
 	"DuplicateProductErrorType": "DuplicateProductErrorType",
 	"Duplicate Product Found": "Duplicate Product Found",
-	"StockNotFoundErrorType": "StockNotFoundErrorType"
+	"StockNotFoundErrorType": "StockNotFoundErrorType",
+	"Stock is In active": "Stock is In active"
 }

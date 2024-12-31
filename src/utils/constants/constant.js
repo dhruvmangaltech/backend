@@ -137,7 +137,9 @@ export const ADMIN_PERMISSION = {
   // GeoBlocking: ['C', 'R', 'U', 'T', 'D'],
   // Bonus: ['C', 'R', 'U', 'T', 'D', 'Issue'],
   Stocks: ['C', 'R', 'U', 'T', 'D'],
-  Products: ['C', 'R', 'U', 'T', 'D']
+  Products: ['C', 'R', 'U', 'T', 'D'],
+  Scanner: ['C', 'R', 'U', 'T', 'D'],
+  ProductDetails: ['C', 'R', 'U', 'T', 'D']
 }
 
 export const TOGGLE_CASE = {

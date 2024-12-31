@@ -1148,6 +1148,6 @@ export const StockNotFoundErrorType = {
   name: 'StockNotFoundErrorType',
   statusCode: StatusCodes.NOT_FOUND,
   isOperational: true,
-  description: 'Duplicate Product Found',
+  description: 'Stock is In active',
   errorCode: 3206
 }
